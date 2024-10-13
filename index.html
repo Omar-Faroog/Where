@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار بايثون</title>
+    <!-- استدعاء خط Fredoka مع دعم للأوزان المختلفة -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400&display=swap" rel="stylesheet">
+    <style>
+        body, h1, h2, h3, h4, h5, h6, p, button {
+            margin: 0;
+            padding: 0;
+            font-family: 'Fredoka', sans-serif; /* استخدام خط Fredoka */
+            font-weight: 400; /* تعيين الوزن إلى 400 */
+            text-align: center;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .progress-container {
+            width: 70%;
+            background-color: #E5E5E5;
+            height: 16px;
+            border-radius: 10px;
+            margin-top: 20px;
+            position: relative;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background-color: #58CC02;
+            border-radius: 8px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* إضافة الشريط اللامع في المنتصف */
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            width: 90%;
+            height: 30%;
+            background-color: rgba(255, 255, 255, 0.3); /* لون الخط اللامع */
+            border-radius: 4px;
+            transform: translateY(-100%);
+        }
+        .instruction-text {
+            margin-top: 10px;
+            font-size: 25px;
+            font-weight: bold;
+            color: #333;
+            text-align: right;
+            width: 94%;
+            margin-right: 0;
+        }
+        button {
+            padding: 8px 180px;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            margin: 20px 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .image img1 {
+            width: 150px;
+            height: 150px;
+            border-radius: 5%;
+        }
+
+        .message-container {
+            display: flex;
+            flex-direction: column; /* لضمان ترتيب العناصر عمودياً */
+            align-items: center;
+            justify-content: flex-start;
+            width: 95%;
+            margin-top: 10px; /* إضافة مسافة فوق الفقاعة */
+        }
+
+        .message {
+            position: relative;
+            background-color: #fff;
+            color: #000;
+            font-size: 18px;
+            padding: 15px 25px; /* تقليل padding الجانبي */
+            border-radius: 20px;
+            border: 2px solid #E5E5E5;
+            font-family: 'Arial', sans-serif;
+            direction: rtl;
+            max-width: 400px; /* تحديد عرض أقصى للفقاعة */
+            word-wrap: break-word; /* للسماح بتفكيك الكلمات الطويلة */
+            text-align: center; /* لتوسيط النص */
+            margin: 0 20px; /* إضافة هوامش جانبية */
+        }
+
+        .chat-bubble::after {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent; /* جعل الجهة اليسرى أكبر */
+            border-right: 15px solid transparent; /* جعل الجهة اليمنى أصغر */
+            border-bottom: 20px solid #fff;
+        }
+
+        .chat-bubble::before {
+            content: '';
+            position: absolute;
+            top: -23px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 28px solid transparent; /* جعل الجهة اليسرى أكبر */
+            border-right: 18px solid transparent; /* جعل الجهة اليمنى أصغر */
+            border-bottom: 22px solid #E5E5E5;
+        }
+
+        .image {
+            margin-left: 10px;
+        }
+
+        .image img {
+            width: 150px;
+            height: 150px;
+            border-radius: 5%;
+        }
+
+        .option-button {
+    background-color: #fff;
+    border-style: solid;
+    border-width: 2px 2px 4px 2px; /* الحافة العلوية واليمنى واليسرى 2px، والحافة السفلية 4px */
+    border-color: #E5E5E5; /* لون الحدود */
+    padding: 15px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 16px;
+    transition: 0.3s;
+    color: #000;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transform: translateY(100px);
+}
+        .option-button.selected {
+            border-color: #84D8FF;
+            background-color: #DDF4FF;
+            color: #1CB0F6;
+        }
+
+        .option-button.correct {
+            border-color: ;
+        }
+
+        .option-button.incorrect {
+            border-color: #3F85A7;
+        }
+        .check-button-active {
+    background-color: #58CC02;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 8px 180px;
+    cursor: pointer;
+    font-size: 18px;
+    position: fixed; /* إبقاء الزر في وضع ثابت */
+    bottom: 5px; /* مكان الزر */
+    left: 48%; /* لتوسيط الزر */
+    transform: translateX(-50%); /* لتوسيع الزر بشكل أفقي */
+    box-shadow: 0 4px 0 #58A700; /* إضافة ظل */
+    transition: all 0.3s ease; /* تأثير الانتقال */
+    outline: none; /* إزالة تأثير التحديد */
+    -webkit-tap-highlight-color: transparent; /* إزالة تأثير التمييز في الهواتف المحمولة */
+}
+
+.check-button-active:active {
+    box-shadow: 0 0px 0 #79B933; /* تغيير الظل عند الضغط */
+    transform: translate(-50%, 4px); /* تحريك الزر 4px للأسفل */
+    outline: none; /* إزالة تأثير التحديد عند الضغط */
+}
+
+.check-button-active:focus, 
+.check-button-active:focus-visible {
+    outline: none; /* إزالة المربع عند التركيز */
+    box-shadow: none; /* إزالة أي تأثير ظل */
+    -webkit-box-shadow: none; /* إزالة أي تأثير ظل على متصفح كروم */
+}
+        .check-button-disabled {
+            background-color: #E5E5E5;
+            color: #999;
+            border: 2px solid transparent;
+            border-radius: 15px;
+            padding: 8px 180px;
+            position: fixed;
+            bottom: 1px; /* مكان الزر */
+            left: 48%;
+            transform: translateX(-50%);
+            cursor: not-allowed;
+        }
+
+        /* تعديل النافذة المنبثقة */
+        #popup {
+    display: none; /* النافذة مخفية افتراضيًا */
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 500px;
+    background-color: #fff; /* لون مريح للعين */
+    border-top-left-radius: 10px; /* منحنى للحافة العلوية اليسرى */
+    border-top-right-radius: 250px; /* منحنى للحافة العلوية اليمنى */
+    padding: 20px; /* زيادة الحشو */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* زيادة تأثير الظل */
+    font-family: Arial, sans-serif; /* اختيار خط مريح */
+    color: #333; /* لون النص */
+    border-top: 5px solid #E5E5E5; /* إضافة حافة علوية رمادية */
+    border-left: 4px solid #ccc; /* إضافة حافة جانبية يسارية رمادية */
+    border-right: 2px solid #ccc; /* إضافة حافة جانبية يمينية رمادية */
+    transition: all 0.3s ease; /* تأثير الانتقال */
+}
+
+/* عندما تضاف فئة .show ستصبح النافذة مرئية */
+#popup.show {
+    display: block; /* إظهار النافذة عند الحاجة */
+    transform: translateX(-50%) translateY(-10px); /* رفع النافذة قليلاً عند الفتح */
+    opacity: 1; /* جعل النافذة مرئية */
+}
+        #nextButtonPopup {
+    background-color: #58CC02;
+    color: white;
+    border: 2px solid transparent;
+    border-radius: 15px;
+    padding: 8px 160px;
+    cursor: pointer;
+    margin-top: 20px;
+    position: relative; /* لإمكانية استخدام transform */
+    box-shadow: 0 4px 0 #58A700; /* إضافة الظل */
+    transition: transform 0.1s ease, box-shadow 0.1s ease; /* جعل الحركة أسرع */
+    outline: none; /* إزالة المربع الأزرق */
+    -webkit-tap-highlight-color: transparent; /* إزالة التأثير الأزرق عند اللمس */
+}
+
+#nextButtonPopup:focus {
+    outline: none; /* إزالة المربع الأزرق عند التركيز على الزر */
+}
+
+#nextButtonPopup:active {
+    transform: translateY(4px); /* النزول بالزر عند النقر */
+    box-shadow: 0 0px 0 #79B933; /* تقليل الظل عند النقر */
+}
+        #completionMessage {
+            display: none;
+            margin-top: 50px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #redirectButton {
+    display: none;
+    background-color: #18BFFF;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 8px 180px; /* تقليل الـ padding الأفقي */
+    cursor: pointer;
+    font-size: 18px;
+    position: absolute; /* أو استخدم fixed إذا أردته ثابتًا أثناء التمرير */
+    bottom: 5px; /* المسافة من أسفل الصفحة */
+    left: 48%; /* للتمركز في المنتصف */
+    transform: translateX(-50%); /* ضبط المركزية */
+    box-shadow: 0 4px 0 #149ADC;
+    transition: all 0.3s ease;
+    outline: none; /* إزالة تأثير التحديد */
+    -webkit-tap-highlight-color: transparent; /* إزالة تأثير التمييز في الهواتف المحمولة */
+    text-align: center; /* لتوسيط النص */
+}
+
+#redirectButton:active {
+    box-shadow: 0 0px 0 #149ADC;
+    transform: translate(-50%, 4px); /* الحفاظ على المحاذاة المركزية أثناء الضغط */
+    outline: none; /* إزالة تأثير التحديد عند الضغط */
+}
+    </style>
+</head>
+<body>
+    <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="instruction-text">!تدريب بايثون الاول</div>
+
+<div class="image">
+    <img src="https://s5files.mobeasy.com/static/u/1520818/file-1520818-418934.png" alt="Profile Picture">
+</div>
+
+<div class="message-container" id="questionContainer">
+    <div class="message" id="question1">
+        ما هو الكود الذي يقوم بطباعة النص ("Hello world")؟
+    </div>
+    <div>
+        <button class="option-button" onclick="selectAnswer(this)">print "Hello world"</button>
+        <button class="option-button correct" onclick="selectAnswer(this)">print("Hello world")</button>
+        <button class="option-button" onclick="selectAnswer(this)">echo "Hello world"</button>
+        <button class="option-button" onclick="selectAnswer(this)">printf("Hello world")</button>
+    </div>
+</div>
+
+<button id="checkButton" class="check-button-disabled" onclick="checkAnswer()" disabled>تحقّق</button>
+<button id="nextButton" style="display: none;" onclick="nextQuestion()">انتهيت من السؤال</button>
+
+<div id="popup">
+    <h1 id="errorMessage" style="display: none; color: #EE5555;">!الإجابة خاطئة</h1>
+    <div class="image">
+        <img src="https://s5files.mobeasy.com/static/u/1520818/file-1520818-542142.png" alt="Profile Picture">
+        <h2 id="resultText"></h2>
+        <button id="nextButtonPopup" onclick="nextQuestion()">التالي</button>
+    </div>
+</div>
+
+<div id="completionMessage" style="display: none;">انتهى هذا الاختبار</div>
+<button id="redirectButton" style="display: none;" onclick="redirectToSite()">الإنتقال</button>
+
+<audio id="correctSound" src="https://s5files.mobeasy.com/static/u/1520818/file-1520818-367891.mp3"></audio>
+<audio id="wrongSound" src="https://s5files.mobeasy.com/static/u/1520818/file-1520818-529672.mp3"></audio>
+<audio id="completionSound" src="https://s5files.mobeasy.com/static/u/1520818/file-1520818-385222.mp3"></audio>
+
+<script>
+let currentProgress = 0;
+const totalQuestions = 20;
+const progressBar = document.getElementById("progressBar");
+
+const questions = [
+    {
+        question: "ما هي الكلمة المفتاحية لإنشاء حلقة في بايثون؟",
+        options: [
+            "loop",
+            "iterate",
+            "for",
+            "int",
+            "repeat"
+        ],
+        correctIndex: 2
+    },
+    {
+        question: "ما هي الكلمة المفتاحية لإنشاء حلقة في بايثون؟",
+        options: [
+            "echo",
+            "write",
+            "print",
+            "output"
+        ],
+        correctIndex: 2
+    },
+    {
+        question: "ما هي الطريقة الصحيحة لتعريف دالة في بايثون؟",
+        options: [
+            "function myFunction(){}",
+            "def myFunction():",
+            "myFunction() => {}",
+            "create myFunction()"
+        ],
+        correctIndex: 1
+    },
+    {
+        question: "ما هو نوع البيانات الذي يُستخدم لتمثيل الأعداد الصحيحة؟",
+        options: [
+            "string",
+            "float",
+            "char",
+            "number",
+            "int",
+            "integer",
+            "ليست بين الاجابات المتاحة"
+        ],
+        correctIndex: 4
+    },
+    {
+        question: "كيف يمكنك إضافة عنصر إلى قائمة في بايثون؟",
+        options: [
+            "list.add(item)",
+            "list.append(item)",
+            "list.push(item)",
+            "list.insert(item)",
+            "list.extend([item])"
+        ],
+        correctIndex: 1
+    },
+    {
+        question: "ما هي الطريقة الصحيحة لإظهار نص على الشاشة؟",
+        options: [
+            "echo( Hello )",
+            "show( Hello )",
+            "write( Hello )",
+            "document.write(\"Hello\")",
+            "print( Hello )"
+        ],
+        correctIndex: 4
+    },
+    {
+        question: "كيف يمكن تحويل قيمة نصية '45' إلى عدد صحيح في بايثون؟",
+        options: [
+            "float('45')",
+            "str('45')",
+            "int('45')",
+            "tuple('45')"
+        ],
+        correctIndex: 2
+    },
+    {
+        question: "أي من هذه الكلمات هي كلمة محجوزة في بايثون؟",
+        options: [
+            "array",
+            "func",
+            "loop",
+            "define",
+            "lambda"
+        ],
+        correctIndex: 4
+    },
+    {
+        question: "كيف يمكنك إنشاء متغير في بايثون؟",
+        options: [
+            "var x = 10;",
+            "let x = 10;",
+            "x = 10",
+            "create x = 10;"
+        ],
+        correctIndex: 2
+    },
+    {
+        question: "ما النتيجة عند تنفيذ الكود التالي: print(3 * (2 + 1))؟",
+        options: [
+            "6",
+            "12",
+            "8",
+            "9",
+            "15",
+            "10"
+        ],
+        correctIndex: 3
+    },
+    {
+        question: "for i _____ range(5):",
+        options: [
+            "at",
+            "in",
+            "with",
+            "char",
+            "on"
+        ],
+        correctIndex: 1
+    },
+    {
+        question: "ما هي الطريقة الصحيحة لتكرار نص؟",
+        options: [
+            "'Hello' * 3",
+            "'Hello' + 'Hello' + 'Hello'",
+            "'Hello'.repeat(3)",
+            "print('Hello' x 3)"
+        ],
+        correctIndex: 0
+    },
+    {
+        question: "كيف يمكنك الوصول إلى العنصر الثاني في قائمة؟",
+        options: [
+            "list[1]",
+            "list[2]",
+            "list[0]",
+            "list(1)"
+        ],
+        correctIndex: 0
+    },
+    {
+        question: "ما هو الكود الذي يقوم بطباعة هذا النص على الشاشة (\"Hello world\")؟",
+        options: [
+            "print \"Hello world\"",
+            "echo \"Hello world\"",
+            "printf(\"Hello world\")",
+            "print(\"Hello world\")",
+            "console.log(\"Hello world\")"
+        ],
+        correctIndex: 3
+    },
+    {
+        question: "كيف يمكنك إيقاف الحلقة في بايثون؟",
+        options: [
+            "stop",
+            "break",
+            "end",
+            "exit"
+        ],
+        correctIndex: 1
+    },
+    {
+        question: "ما هو نوع البيانات الصحيح لتمثيل النصوص في بايثون؟",
+        options: [
+            "int",
+            "char",
+            "string",
+            "float"
+        ],
+        correctIndex: 2
+    },
+    {
+        question: "كيف يمكنك الحصول على طول قائمة في بايثون؟",
+        options: [
+            "size(list)",
+            "length(list)",
+            "len(list)",
+            "count(list)"
+        ],
+        correctIndex: 2
+    },
+    {
+        question: "أي من هذه الكلمات تُستخدم لإنشاء شرط في بايثون؟",
+        options: [
+            "for",
+            "if",
+            "when",
+            "loop"
+        ],
+        correctIndex: 1
+    },
+    {
+        question: "ما هي الطريقة الصحيحة لتعريف معادلة رياضية في بايثون؟",
+        options: [
+            "result = 5 + 10",
+            "result := 5 + 10",
+            "let result = 5 + 10",
+            "define result = 5 + 10"
+        ],
+        correctIndex: 0
+    },
+    {
+        question: "كيف يمكنك تحويل عدد صحيح إلى نص في بايثون؟",
+        options: [
+            "str(10)",
+            "int('10')",
+            "parse(10)",
+            "float('10')"
+        ],
+        correctIndex: 0
+    }
+];
+
+function nextQuestion() {
+    setTimeout(function() { // تأخير لمدة 200 مللي ثانية قبل الانتقال
+        const popup = document.getElementById("popup");
+        popup.style.display = "none"; 
+        if (currentProgress < totalQuestions - 1) {
+            currentProgress++;
+            updateProgressBar();
+            loadQuestion();
+        } else {
+            showCompletionMessage();
+        }
+    }, 250); // 200 مللي ثانية تأخير
+}
+
+function loadQuestion() {
+    const currentQuestion = questions[currentProgress];
+    const questionContainer = document.getElementById("questionContainer");
+    questionContainer.innerHTML = `
+        <div class="message">${currentQuestion.question}</div>
+        <div>
+            ${currentQuestion.options.map((option, index) => `
+                <button class="option-button" onclick="selectAnswer(this, ${index})">${option}</button>
+            `).join('')}
+        </div>
+    `;
+    document.getElementById("checkButton").disabled = true;
+    document.getElementById("checkButton").className = "check-button-disabled"; 
+    document.getElementById("nextButton").style.display = "none";
+}
+
+function selectAnswer(element, index) {
+    const currentQuestion = questions[currentProgress];
+    document.querySelectorAll(".option-button").forEach(btn => {
+        btn.classList.remove("selected");
+    });
+    element.classList.add("selected");
+
+    const checkButton = document.getElementById("checkButton");
+    checkButton.disabled = false;
+    checkButton.className = "check-button-active"; 
+}
+
+function checkAnswer() {
+    setTimeout(function() { // تأخير لمدة 200 مللي ثانية قبل فحص الإجابة
+        const selectedOption = document.querySelector(".option-button.selected");
+        const correctAnswerIndex = questions[currentProgress].correctIndex;
+        const popup = document.getElementById("popup");
+        const resultText = document.getElementById("resultText");
+        const errorMessage = document.getElementById("errorMessage");
+
+        const correctSound = document.getElementById("correctSound");
+        const wrongSound = document.getElementById("wrongSound");
+
+        if (selectedOption) {
+            if (selectedOption.innerText === questions[currentProgress].options[correctAnswerIndex]) {
+                selectedOption.style.borderColor = "#A5EE6E";
+                resultText.textContent = "!إجابة صحيحة";
+                document.getElementById("nextButtonPopup").textContent = "المتابعة";
+                errorMessage.style.display = "none"; 
+                correctSound.play(); 
+            } else {
+                selectedOption.style.borderColor = "red";
+                errorMessage.textContent = "!الإجابة خاطئة";
+                resultText.textContent = " هي الإجابة الصحيحة: " + questions[currentProgress].options[correctAnswerIndex];
+                document.getElementById("nextButtonPopup").textContent = "فهمت";
+                errorMessage.style.display = "block"; 
+                wrongSound.play(); 
+            }
+            popup.style.display = "block";
+        }
+    }, 200); // 200 مللي ثانية تأخير
+}
+
+function updateProgressBar() {
+    const progressPercentage = ((currentProgress + 1) / totalQuestions) * 100;
+    progressBar.style.width = progressPercentage + "%";
+}
+
+function showCompletionMessage() {
+    setTimeout(function() { // تأخير قبل عرض رسالة الإكمال
+        const completionSound = document.getElementById("completionSound");
+        completionSound.play(); // تشغيل الصوت عند انتهاء الاختبار
+
+        document.getElementById("completionMessage").style.display = "block";
+        document.getElementById("redirectButton").style.display = "block";
+        document.getElementById("nextButton").style.display = "none";
+        document.getElementById("checkButton").style.display = "none";
+        document.getElementById("questionContainer").style.display = "none";
+        document.getElementById("finalNote").style.display = "block"; 
+    }, 200); // 200 مللي ثانية تأخير
+}
+
+function redirectToSite() {
+    window.location.href = "https://omar-faroog.github.io/Victory/"; 
+}
+
+loadQuestion(); 
+</script>
+</body>
+</html>
