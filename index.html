@@ -16,7 +16,6 @@
             font-weight: 400; /* تعيين الوزن إلى 400 */
             text-align: center;
         }
-
         body {
             display: flex;
             flex-direction: column;
@@ -64,7 +63,7 @@
         }
         button {
             padding: 8px 180px;
-            color: white;
+            color: red;
             border: none;
             border-radius: 15px;
             margin: 20px 10px;
@@ -152,7 +151,7 @@
     color: #000;
     outline: none;
     -webkit-tap-highlight-color: transparent;
-    transform: translateY(100px);
+    transform: translateY(30px);
 }
         .option-button.selected {
             border-color: #84D8FF;
@@ -180,7 +179,7 @@
     left: 48%; /* لتوسيط الزر */
     transform: translateX(-50%); /* لتوسيع الزر بشكل أفقي */
     box-shadow: 0 4px 0 #58A700; /* إضافة ظل */
-    transition: all 0.3s ease; /* تأثير الانتقال */
+    transition: all 0.2s ease; /* تأثير الانتقال */
     outline: none; /* إزالة تأثير التحديد */
     -webkit-tap-highlight-color: transparent; /* إزالة تأثير التمييز في الهواتف المحمولة */
 }
@@ -194,8 +193,6 @@
 .check-button-active:focus, 
 .check-button-active:focus-visible {
     outline: none; /* إزالة المربع عند التركيز */
-    box-shadow: none; /* إزالة أي تأثير ظل */
-    -webkit-box-shadow: none; /* إزالة أي تأثير ظل على متصفح كروم */
 }
         .check-button-disabled {
             background-color: #E5E5E5;
@@ -223,6 +220,7 @@
     border-top-left-radius: 10px; /* منحنى للحافة العلوية اليسرى */
     border-top-right-radius: 250px; /* منحنى للحافة العلوية اليمنى */
     padding: 20px; /* زيادة الحشو */
+    padding-bottom: 80px; /* إضافة حشو سفلي لإفساح مكان للزر */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* زيادة تأثير الظل */
     font-family: Arial, sans-serif; /* اختيار خط مريح */
     color: #333; /* لون النص */
@@ -238,28 +236,31 @@
     transform: translateX(-50%) translateY(-10px); /* رفع النافذة قليلاً عند الفتح */
     opacity: 1; /* جعل النافذة مرئية */
 }
-        #nextButtonPopup {
+
+#nextButtonPopup {
+    width: 84%;
+    max-width: 500px;
     background-color: #58CC02;
     color: white;
-    border: 2px solid transparent;
+    border: none;
     border-radius: 15px;
-    padding: 8px 160px;
+    padding: 8px 180px; /* نفس حجم زر .check-button-active */
     cursor: pointer;
-    margin-top: 20px;
-    position: relative; /* لإمكانية استخدام transform */
-    box-shadow: 0 4px 0 #58A700; /* إضافة الظل */
-    transition: transform 0.1s ease, box-shadow 0.1s ease; /* جعل الحركة أسرع */
-    outline: none; /* إزالة المربع الأزرق */
+    font-size: 18px;
+    position: fixed; /* لتثبيت مكانه */
+    bottom: 5px; /* نفس مكان الزر */
+    left: 48%; /* لتوسيط الزر */
+    transform: translateX(-50%); /* لتوسيط الزر أفقياً */
+    box-shadow: 0 4px 0 #58A700; /* نفس تأثير الظل */
+    transition: all 0.2s ease; /* نفس تأثير الانتقال */
+    outline: none; /* إزالة تأثير التحديد */
     -webkit-tap-highlight-color: transparent; /* إزالة التأثير الأزرق عند اللمس */
 }
 
-#nextButtonPopup:focus {
-    outline: none; /* إزالة المربع الأزرق عند التركيز على الزر */
-}
-
 #nextButtonPopup:active {
-    transform: translateY(4px); /* النزول بالزر عند النقر */
-    box-shadow: 0 0px 0 #79B933; /* تقليل الظل عند النقر */
+    box-shadow: 0 0px 0 #79B933; /* نفس الظل عند الضغط */
+    transform: translate(-50%, 4px); /* نفس التحريك عند الضغط */
+    outline: none; /* إزالة التحديد عند الضغط */
 }
         #completionMessage {
             display: none;
@@ -269,27 +270,26 @@
         }
         #redirectButton {
     display: none;
-    background-color: #18BFFF;
+    background-color: #1CB0F6;
     color: white;
     border: none;
     border-radius: 15px;
-    padding: 8px 180px; /* تقليل الـ padding الأفقي */
+    padding: 8px 174.5px;
+    bottom: 5px; /* المسافة من أسفل الشاشة */
+    left: 48%; /* لتوسيط الزر أفقياً */
+    transform: translateX(-50%); /* لتوسيط الزر تماماً */
     cursor: pointer;
     font-size: 18px;
-    position: absolute; /* أو استخدم fixed إذا أردته ثابتًا أثناء التمرير */
-    bottom: 5px; /* المسافة من أسفل الصفحة */
-    left: 48%; /* للتمركز في المنتصف */
-    transform: translateX(-50%); /* ضبط المركزية */
-    box-shadow: 0 4px 0 #149ADC;
-    transition: all 0.3s ease;
+    position: fixed; /* لتثبيت الزر في أسفل الشاشة */
+    box-shadow: 0 4px 0 #1899D6;
+    transition: all 0.2s ease;
     outline: none; /* إزالة تأثير التحديد */
     -webkit-tap-highlight-color: transparent; /* إزالة تأثير التمييز في الهواتف المحمولة */
-    text-align: center; /* لتوسيط النص */
 }
 
 #redirectButton:active {
-    box-shadow: 0 0px 0 #149ADC;
-    transform: translate(-50%, 4px); /* الحفاظ على المحاذاة المركزية أثناء الضغط */
+    box-shadow: 0 0px 0 #1899D6;
+    transform: translate(-50%, 4px); /* تعديل الموضع عند الضغط */
     outline: none; /* إزالة تأثير التحديد عند الضغط */
 }
     </style>
@@ -299,7 +299,7 @@
     <div class="progress-bar" id="progressBar"></div>
 </div>
 
-<div class="instruction-text">!تدريب بايثون الاول</div>
+<div class="instruction-text">إختبار المعارف</div>
 
 <div class="image">
     <img src="https://s5files.mobeasy.com/static/u/1520818/file-1520818-418934.png" alt="Profile Picture">
@@ -329,7 +329,7 @@
     </div>
 </div>
 
-<div id="completionMessage" style="display: none;">انتهى هذا الاختبار</div>
+<div id="completionMessage" style="display: none;">إنتهى هذا الإختبار</div>
 <button id="redirectButton" style="display: none;" onclick="redirectToSite()">الإنتقال</button>
 
 <audio id="correctSound" src="https://s5files.mobeasy.com/static/u/1520818/file-1520818-367891.mp3"></audio>
@@ -648,7 +648,7 @@ function showCompletionMessage() {
 }
 
 function redirectToSite() {
-    window.location.href = "https://omar-faroog.github.io/Victory/"; 
+    window.location.href = "https://omar-faroog.github.io/Km-2/"; 
 }
 
 loadQuestion(); 
